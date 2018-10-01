@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css?family=Anton');
+
+body{
+    text-align: center;
+    background-color: black;
+    color: grey;
+    font-family: 'Anton', sans-serif;
+    font-size: 40px;
+    min-height: 55vh;
+    padding-top: 45vh;
+  }
+
+  input{
+    font-family: 'Anton', sans-serif;
+    color: grey;
+    font-size: 40px;
+    background-color: black;
+    border: 0px;
+    outline: none;
+  }
