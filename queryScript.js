@@ -1,4 +1,6 @@
-function getQuery() {
+import { goToWiki } from "wikiScript";
+
+export function getQuery() {
     let url = window.location.href;
     let queryIndex = url.indexOf('?');
     let query = url.slice(queryIndex);
@@ -14,5 +16,17 @@ function beautifyName(query) {
 	}
     name = name.join(" ");
 
-    document.write(name);
+    return name;
+}
+
+function getAge(query) {
+    
+}
+
+function returnQuery() {
+    var query = beautifyName(getQuery());
+    let age = 'x';
+
+    document.write(query + ' is ' + age + ' years old.');
+    document.write(goToWiki());
 }
