@@ -22,4 +22,16 @@ function returnQuery() {
     document.write(query + ' is ' + age + ' years old.');
 }
 
-module.exports = beautifyName;
+function getWikiURL() {
+    let query = beautifyName(getQuery());
+    let wikiQuery = query.split(' ').join('_');
+    const wikiURL = `https://en.wikipedia.org/w/api.php?action=query&prop=revisions&rvprop=content&rvsection=0&titles=${wikiQuery}&format=json`;
+    return wikiURL;
+}
+
+var queryInfo = $.getJSON(getWikiURL(), { pages: 'birth_date' });
+
+function testQuery() {
+    var query = queryInfo;
+    document.write(query);
+}
