@@ -22,14 +22,25 @@ function returnQuery() {
     document.write(query + ' is ' + age + ' years old.');
 }
 
-function getWikiURL() {
-    let query = beautifyName(getQuery());
-    let wikiQuery = query.split(' ').join('_');
-    const wikiURL = `https://en.wikipedia.org/w/api.php?action=query&prop=revisions&rvprop=content&rvsection=0&titles=${wikiQuery}&format=json`;
-    return wikiURL;
-}
-
-var queryInfo = $.getJSON(getWikiURL(), { pages: 'birth_date' });
+var queryInfo = $.ajax( {
+    url: 'https://en.wikipedia.org/w/api.php',
+    data: {
+        action: 'query',
+        prop: 'revisions',
+        rvprop: 'content',
+        rvsection: 0,
+        titles: beautifyName(getQuery()),
+        format: 'json',
+        origin: 'https://en.wikipedia.org'
+    },
+    xhrFields: {
+        withCredentials: true
+    },
+    dataType: 'json'
+} ).done( function ( data ) {
+    alert( 'Foreign user ' + data.query.userinfo.name +
+        ' (ID ' + data.query.userinfo.id + ')' );
+} );
 
 function testQuery() {
     var query = queryInfo;
