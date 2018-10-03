@@ -15,18 +15,6 @@ function beautifyName(query) {
     return name;
 }
 
-function goToWiki() {
-    let query = beautifyName(getQuery());
-    let wikiQuery = query.split(' ').join('_');
-    const wikiURL = `https://en.wikipedia.org/w/api.php?action=query&prop=revisions&rvprop=content&rvsection=0&titles=${wikiQuery}&format=json`;
-
-    return wikiURL;
-}
-
-function getAge() {
-
-}
-
 function returnQuery() {
     var query = beautifyName(getQuery());
     let age = 'x';
@@ -34,7 +22,4 @@ function returnQuery() {
     document.write(query + ' is ' + age + ' years old.');
 }
 
-function testQuery() {
-    var query = getAge();
-    document.write(query);
-}
+module.exports = beautifyName;
