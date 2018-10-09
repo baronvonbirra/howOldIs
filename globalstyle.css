@@ -18,3 +18,10 @@ body{
     border: 0px;
     outline: none;
   }
+
+  .btn {
+    background-color: black;
+    border: none;
+    color: grey;
+    cursor: pointer;
+}
