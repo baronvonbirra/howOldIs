@@ -38,10 +38,9 @@ var queryInfo = $.ajax( {
     },
     dataType: 'jsonp',
     success: function(call){
-            $("<pre>").text(JSON.stringify(call)).appendTo("body");
-            }
+        var jsonCall = JSON.stringify(call.query.pages);
+        var birthSection = jsonCall.split('birth_date')[1].split('birth_place')[0];
+        var birthDate = birthSection.match(/\d/g).join('');
+        document.getElementById("test").innerHTML = birthDate;
+        }
     });
-
-function testQuery() {
-   return queryInfo;
-}
