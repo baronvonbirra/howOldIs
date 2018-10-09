@@ -30,19 +30,18 @@ var queryInfo = $.ajax( {
         rvprop: 'content',
         rvsection: 0,
         titles: beautifyName(getQuery()),
-        format: 'json',
-        origin: 'https://en.wikipedia.org'
+        format: 'json'
     },
+    type: 'GET', 
     xhrFields: {
         withCredentials: true
     },
-    dataType: 'json'
-} ).done( function ( data ) {
-    alert( 'Foreign user ' + data.query.userinfo.name +
-        ' (ID ' + data.query.userinfo.id + ')' );
-} );
+    dataType: 'jsonp',
+    success: function(call){
+            $("<pre>").text(JSON.stringify(call)).appendTo("body");
+            }
+    });
 
 function testQuery() {
-    var query = queryInfo;
-    document.write(query);
+   return queryInfo;
 }
