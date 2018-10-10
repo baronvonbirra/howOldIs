@@ -1,5 +1,0 @@
-# TODO notes
-## Investigate how to import properly... that error is a pain.
-## Investigate jsonp
-## Add webpack?
-## Add bootstrap icons
