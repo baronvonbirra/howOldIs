@@ -17,9 +17,8 @@ function beautifyName(query) {
 
 function returnQuery() {
     var query = beautifyName(getQuery());
-    let age = 'x';
 
-    document.write(query + ' is ' + age + ' years old.');
+    document.write(query);
 }
 
 var queryInfo = $.ajax( {
@@ -37,10 +36,55 @@ var queryInfo = $.ajax( {
         withCredentials: true
     },
     dataType: 'jsonp',
-    success: function(call){
-        var jsonCall = JSON.stringify(call.query.pages);
-        var birthSection = jsonCall.split('birth_date')[1].split('birth_place')[0];
-        var birthDate = birthSection.match(/\d/g).join('');
-        document.getElementById("test").innerHTML = birthDate;
-        }
+    success: getDateCall
     });
+    
+function getDateCall(call) {
+    var jsonCall = JSON.stringify(call.query.pages);
+    var birthSection = jsonCall.split('birth_date')[1].split('birth_place')[0];
+    var yearCalculation = calculateYears(birthSection);
+
+    document.getElementById("age").innerHTML = yearCalculation;
+    return yearCalculation;
+    }
+
+function compareYear(date) {
+    console.log(date);
+    var birthYear = date.split('|')[1];
+    console.log(birthYear);
+    var currentDate = new Date();
+    var currentYear = currentDate.getFullYear();
+    var compare = currentYear - birthYear;
+
+    return compare;
+}
+
+function compareMonth(date) {
+    var birthMonth = date.split('|')[2];
+    var currentDate = new Date();
+    var currentMonth = currentDate.getMonth();
+    var compare = (currentMonth + 1) - birthMonth;
+
+    return compare;
+}
+
+function compareDay(date) {
+    var birthDay = date.split('|')[3];
+    var currentDate = new Date();
+    var currentDay = currentDate.getDate();
+    var compare = currentDay - birthDay;
+
+    return compare;
+}
+
+function calculateYears(date) {
+    var initialYears = compareYear(date);
+    var monthDifference = compareMonth(date);
+    var dayDifference = compareDay(date);
+
+    if ((monthDifference <= 0) && (dayDifference <=0)){
+        return (initialYears + 1);
+    } else {
+        return initialYears;
+    }
+}
