@@ -39,24 +39,31 @@ function getDateCall(call) {
         return errorMessage();
     } else {
         var birthSection = jsonCall.split('birth_date')[1].split('birth_place')[0];
-        var yearCalculation = calculateYears(birthSection);
+        var reg = /[\|\d]/g;
+        var date = birthSection.match(reg).join('');
+        date = dateTrimmer(date);
+        var yearCalculation = calculateYears(date);
         return successMessage(yearCalculation);
     }
 }
 
+function dateTrimmer(date) {
+    while(date.charAt(0) === '|') {
+        date = date.substr(1);
+    }
+    return date;
+}
+
 function compareYear(date) {
-    console.log(date);
-    var birthYear = date.split('|')[1];
-    console.log(birthYear);
+    var birthYear = date.split('|')[0];
     var currentDate = new Date();
     var currentYear = currentDate.getFullYear();
     var compare = currentYear - birthYear;
-
     return compare;
 }
 
 function compareMonth(date) {
-    var birthMonth = date.split('|')[2];
+    var birthMonth = date.split('|')[1];
     var currentDate = new Date();
     var currentMonth = currentDate.getMonth();
     var compare = (currentMonth + 1) - birthMonth;
@@ -65,7 +72,7 @@ function compareMonth(date) {
 }
 
 function compareDay(date) {
-    var birthDay = date.split('|')[3];
+    var birthDay = date.split('|')[2];
     var currentDate = new Date();
     var currentDay = currentDate.getDate();
     var compare = currentDay - birthDay;
@@ -91,7 +98,7 @@ function successMessage(age) {
 }
 
 function errorMessage() {
-    var message = beautifyName(getQuery()) + ' is not a person, or not famous enough.';
+    var message = beautifyName(getQuery()) + ' is not a person, or not famous enough. Check spelling and try again.';
 
     document.getElementById("message").innerHTML = message;
 }
