@@ -42,8 +42,12 @@ function getDateCall(call) {
         var reg = /[\|\d]/g;
         var date = birthSection.match(reg).join('');
         date = dateTrimmer(date);
-        var yearCalculation = calculateYears(date);
-        return successMessage(yearCalculation);
+        var yearCalculation = calculateYears(date, currentDate);
+        if (jsonCall.includes('death_date')){
+           return successDeadMessage(yearCalculation);
+        } else {
+        return successAliveMessage(yearCalculation);
+        }
     }
 }
 
@@ -54,26 +58,25 @@ function dateTrimmer(date) {
     return date;
 }
 
-function compareYear(date) {
+var currentDate = new Date();
+
+function compareYear(date, compareDate) {
     var birthYear = date.split('|')[0];
-    var currentDate = new Date();
     var currentYear = currentDate.getFullYear();
     var compare = currentYear - birthYear;
     return compare;
 }
 
-function compareMonth(date) {
+function compareMonth(date, compareDate) {
     var birthMonth = date.split('|')[1];
-    var currentDate = new Date();
     var currentMonth = currentDate.getMonth();
     var compare = (currentMonth + 1) - birthMonth;
 
     return compare;
 }
 
-function compareDay(date) {
+function compareDay(date, compareDate) {
     var birthDay = date.split('|')[2];
-    var currentDate = new Date();
     var currentDay = currentDate.getDate();
     var compare = currentDay - birthDay;
 
@@ -92,8 +95,13 @@ function calculateYears(date) {
     }
 }
 
-function successMessage(age) {
+function successAliveMessage(age) {
     var message = beautifyName(getQuery()) + ' is ' + age + ' years old.';
+    document.getElementById("message").innerHTML = message;
+}
+
+function successDeadMessage(age) {
+    var message = beautifyName(getQuery()) + ' died. Would be ' + age + ' years old.';
     document.getElementById("message").innerHTML = message;
 }
 
