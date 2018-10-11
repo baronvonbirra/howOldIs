@@ -6,19 +6,13 @@ function getQuery() {
 }
 
 function beautifyName(query) {
-    let name = query.split('+');
+    let name = query.toLowerCase().split('+');
     for (var i = 0; i < name.length; i++) {
 		name[i] = name[i].charAt(0).toUpperCase() + name[i].slice(1);
 	}
     name = name.join(" ");
 
     return name;
-}
-
-function returnQuery() {
-    var query = beautifyName(getQuery());
-
-    document.write(query);
 }
 
 var queryInfo = $.ajax( {
@@ -41,12 +35,14 @@ var queryInfo = $.ajax( {
     
 function getDateCall(call) {
     var jsonCall = JSON.stringify(call.query.pages);
-    var birthSection = jsonCall.split('birth_date')[1].split('birth_place')[0];
-    var yearCalculation = calculateYears(birthSection);
-
-    document.getElementById("age").innerHTML = yearCalculation;
-    return yearCalculation;
+    if (jsonCall.includes('missing')) {
+        return errorMessage();
+    } else {
+        var birthSection = jsonCall.split('birth_date')[1].split('birth_place')[0];
+        var yearCalculation = calculateYears(birthSection);
+        return successMessage(yearCalculation);
     }
+}
 
 function compareYear(date) {
     console.log(date);
@@ -87,4 +83,15 @@ function calculateYears(date) {
     } else {
         return initialYears;
     }
+}
+
+function successMessage(age) {
+    var message = beautifyName(getQuery()) + ' is ' + age + ' years old.';
+    document.getElementById("message").innerHTML = message;
+}
+
+function errorMessage() {
+    var message = beautifyName(getQuery()) + ' is not a person, or not famous enough.';
+
+    document.getElementById("message").innerHTML = message;
 }
