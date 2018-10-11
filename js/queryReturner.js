@@ -35,10 +35,11 @@ var queryInfo = $.ajax( {
     
 function getDateCall(call) {
     var jsonCall = JSON.stringify(call.query.pages);
-    if (jsonCall.includes('missing')) {
+    if (jsonCall.includes('REDIRECT')) {
+        var newName = redirectName(jsonCall);
+        return redirectMessage(newName);
+    } else if ((jsonCall.includes('missing')) || (!jsonCall.includes('birth_date'))) {
         return errorMessage();
-    } else if (jsonCall.includes('REDIRECT')) {
-        return bugMessage();
     } else {
         var birthSection = jsonCall.split('birth_date')[1].split('birth_place')[0];
         var reg = /[\|\d]/g;
@@ -51,6 +52,16 @@ function getDateCall(call) {
         return successAliveMessage(yearCalculation);
         }
     }
+}
+
+function redirectName(call) {
+    var cut = call.split('REDIRECT')[1].split('Redirect')[0];
+    var regDelete = /[\[\]\\n\{\}]/g
+    cut = cut.replace(regDelete, '');
+    var reg = /(\W)([a-zA-Z]+)/g;
+    var name = cut.match(reg).join('');
+
+    return name;
 }
 
 function dateTrimmer(date) {
@@ -108,11 +119,11 @@ function successDeadMessage(age) {
 }
 
 function errorMessage() {
-    var message = beautifyName(getQuery()) + ' is not a person, or not famous enough. Check spelling and try again.';
+    var message = beautifyName(getQuery()) + ' is not a person, or is not famous enough. Check spelling and try again.';
     document.getElementById("message").innerHTML = message;
 }
 
-function bugMessage() {
-    var message = 'Woops! You found a bug! I have to fix this, sorry...';
+function redirectMessage(newName) {
+    var message = 'There seems to be a typo. ' + newName + ' looks like the correct search.';
     document.getElementById("message").innerHTML = message;
 }
