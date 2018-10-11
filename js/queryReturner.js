@@ -37,6 +37,8 @@ function getDateCall(call) {
     var jsonCall = JSON.stringify(call.query.pages);
     if (jsonCall.includes('missing')) {
         return errorMessage();
+    } else if (jsonCall.includes('REDIRECT')) {
+        return bugMessage();
     } else {
         var birthSection = jsonCall.split('birth_date')[1].split('birth_place')[0];
         var reg = /[\|\d]/g;
@@ -107,6 +109,10 @@ function successDeadMessage(age) {
 
 function errorMessage() {
     var message = beautifyName(getQuery()) + ' is not a person, or not famous enough. Check spelling and try again.';
+    document.getElementById("message").innerHTML = message;
+}
 
+function bugMessage() {
+    var message = 'Woops! You found a bug! I have to fix this, sorry...';
     document.getElementById("message").innerHTML = message;
 }
