@@ -1,5 +1,4 @@
 # TODO notes
-
 ## Bug Fixing
-
 ### Allow special characters search (like 'Jesús Gil')
+### App killing people? Check 'Leticia Sabater' case.
