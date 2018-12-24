@@ -43,10 +43,8 @@ function getDateCall(call) {
     } else if ((jsonCall.includes('missing')) || (!jsonCall.includes('birth_date'))) {
         return errorMessage();
     } else {
-        var birthSection = jsonCall.split('birth_date')[1].split('birth_place')[0];
-        var date = birthSection.match(reg).join('');
-        date = dateTrimmer(date);
-        var yearCalculation = calculateYears(date);
+        var dateParse = dateParser(jsonCall);
+        var yearCalculation = calculateYears(dateParse);
 
         if (checkDeath(jsonCall)) {
             var deathAge = deathAgeCalculation(jsonCall, yearCalculation);
@@ -66,11 +64,27 @@ function redirectName(call) {
     return name;
 }
 
+function dateParser(call) {
+    var birthSection = call.split('birth_date')[1].split('birth_place')[0];
+    var date = birthSection.match(reg).join('');
+    date = dateTrimmer(date);
+    
+    if (date.length <= 7) {
+        date = incompleteDateReturner(date);
+    }
+    return date;
+}
+
 function dateTrimmer(date) {
     while(date.charAt(0) === '|') {
         date = date.substr(1);
     }
     return date;
+}
+
+function incompleteDateReturner(date) {
+    var newDate = date.substring(2);
+    return newDate + "0|0";
 }
 
 function getDatePart(date) {
@@ -120,7 +134,7 @@ function calculateYears(date) {
 function checkDeath(call) {
     var death = false;
     if (call.includes('death_date')) {
-       if (deathTrimmer(call).includes('Death date and age')) {
+       if (deathTrimmer(call).includes('death date and age')) {
            death = true;
        }
     }
@@ -129,7 +143,7 @@ function checkDeath(call) {
 
 function deathTrimmer(call) {
     var deathSplit = call.split('death_date')[1].split('death_place')[0];
-    return deathSplit;
+    return deathSplit.toLowerCase();
 }
 
 function deathCalculation(call) {
