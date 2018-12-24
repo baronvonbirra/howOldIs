@@ -1,3 +1,4 @@
 # TODO notes
 ## Bug Fixing
-### Allow special characters search (like 'Jesús Gil')
+All fixed by now...
+## Refine code. Waiting for CR.
