@@ -46,11 +46,11 @@ function getDateCall(call) {
         var birthSection = jsonCall.split('birth_date')[1].split('birth_place')[0];
         var date = birthSection.match(reg).join('');
         date = dateTrimmer(date);
-        var yearCalculation = calculateYears(date, currentDate);
+        var yearCalculation = calculateYears(date);
 
         if (checkDeath(jsonCall)) {
-            
-            return successDeadMessage(yearCalculation);
+            var deathAge = deathAgeCalculation(jsonCall, yearCalculation);
+            return successDeadMessage(yearCalculation, deathAge);
         } else {
             return successAliveMessage(yearCalculation);
         }
@@ -73,25 +73,34 @@ function dateTrimmer(date) {
     return date;
 }
 
-var currentDate = new Date();
+function getDatePart(date) {
+    var currentDate = new Date();
+    if (date == 'year') {
+        return currentDate.getFullYear();
+    } else if (date == 'month') {
+        return currentDate.getMonth();
+    } else {
+        return currentDate.getDate();
+    }
+}
 
 function compareYear(date) {
     var birthYear = date.split('|')[0];
-    var currentYear = currentDate.getFullYear();
+    var currentYear = getDatePart('year');
     var compare = currentYear - birthYear;
     return compare;
 }
 
 function compareMonth(date) {
     var birthMonth = date.split('|')[1];
-    var currentMonth = currentDate.getMonth();
+    var currentMonth = getDatePart('month');
     var compare = (currentMonth + 1) - birthMonth;
     return compare;
 }
 
 function compareDay(date) {
     var birthDay = date.split('|')[2];
-    var currentDay = currentDate.getDate();
+    var currentDay = getDatePart('day');
     var compare = currentDay - birthDay;
     return compare;
 }
@@ -125,10 +134,29 @@ function deathTrimmer(call) {
 
 function deathCalculation(call) {
     var deathSplit = deathTrimmer(call);
-    var date = deathSplit.match(reg).join('');
-    console.log(date);
-    
-    return deathSplit;
+    var dates = deathSplit.match(reg).join('');
+    var dateTrim = dateTrimmer(dates);
+
+    var deathYear = dateTrim.split('|')[0];
+    var deathMonth = dateTrim.split('|')[1];
+    var deathDay = dateTrim.split('|')[2];
+    var currentYear = getDatePart('year');
+    var currentMonth = getDatePart('month');
+    var currentDay = getDatePart('day');
+    var compareYear = currentYear - deathYear;
+    var compareMonth = (currentMonth + 1) - deathMonth;
+    var compareDay = currentDay - deathDay;
+
+    if ((compareMonth <= 0) && (compareDay <=0)){
+        return (compareYear + 1);
+    } else {
+        return compareYear;
+    }
+}
+
+function deathAgeCalculation(call, years) {
+    deathTime = deathCalculation(call);
+    return (years - deathTime);
 }
 
 function successAliveMessage(age) {
@@ -136,8 +164,8 @@ function successAliveMessage(age) {
     document.getElementById("message").innerHTML = message;
 }
 
-function successDeadMessage(age) {
-    var message = beautifyName(getQuery()) + ' died. Would be ' + age + ' years old.';
+function successDeadMessage(age, deathAge) {
+    var message = beautifyName(getQuery()) + ' died at the age of ' + deathAge + '. Would be ' + age + ' years old.';
     document.getElementById("message").innerHTML = message;
 }
 
