@@ -184,7 +184,7 @@ function successDeadMessage(age, deathAge) {
 }
 
 function errorMessage() {
-    var message = beautifyName(getQuery()) + ' is not a real person, or is not famous enough. Check spelling and try again.';
+    var message = "Sorry, but " + beautifyName(getQuery()) + ' is not a real person, is not famous enough, or name is misspelled.';
     document.getElementById("message").innerHTML = message;
 }
 
