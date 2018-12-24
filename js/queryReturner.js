@@ -1,7 +1,7 @@
 function getQuery() {
     let url = window.location.search;
     let query = url.slice(3);
-
+    query = unescape(query);
     return query;
 }
 
