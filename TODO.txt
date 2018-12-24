@@ -1,4 +1,3 @@
 # TODO notes
 ## Bug Fixing
 ### Allow special characters search (like 'Jesús Gil')
-### Weird bug with 'El Fary'; where's the age coming from?
