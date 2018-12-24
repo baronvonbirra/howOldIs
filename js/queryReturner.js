@@ -33,6 +33,8 @@ var queryInfo = $.ajax( {
     success: getDateCall
     });
     
+var reg = /[\|\d]/g;
+    
 function getDateCall(call) {
     var jsonCall = JSON.stringify(call.query.pages);
     if (jsonCall.includes('REDIRECT')) {
@@ -42,14 +44,15 @@ function getDateCall(call) {
         return errorMessage();
     } else {
         var birthSection = jsonCall.split('birth_date')[1].split('birth_place')[0];
-        var reg = /[\|\d]/g;
         var date = birthSection.match(reg).join('');
         date = dateTrimmer(date);
         var yearCalculation = calculateYears(date, currentDate);
-        if (jsonCall.includes('death_date')){
-           return successDeadMessage(yearCalculation);
+
+        if (checkDeath(jsonCall)) {
+            
+            return successDeadMessage(yearCalculation);
         } else {
-        return successAliveMessage(yearCalculation);
+            return successAliveMessage(yearCalculation);
         }
     }
 }
@@ -60,7 +63,6 @@ function redirectName(call) {
     cut = cut.replace(regDelete, '');
     var reg = /(\W)([a-zA-Z]+)/g;
     var name = cut.match(reg).join('');
-
     return name;
 }
 
@@ -73,26 +75,24 @@ function dateTrimmer(date) {
 
 var currentDate = new Date();
 
-function compareYear(date, compareDate) {
+function compareYear(date) {
     var birthYear = date.split('|')[0];
     var currentYear = currentDate.getFullYear();
     var compare = currentYear - birthYear;
     return compare;
 }
 
-function compareMonth(date, compareDate) {
+function compareMonth(date) {
     var birthMonth = date.split('|')[1];
     var currentMonth = currentDate.getMonth();
     var compare = (currentMonth + 1) - birthMonth;
-
     return compare;
 }
 
-function compareDay(date, compareDate) {
+function compareDay(date) {
     var birthDay = date.split('|')[2];
     var currentDay = currentDate.getDate();
     var compare = currentDay - birthDay;
-
     return compare;
 }
 
@@ -108,6 +108,29 @@ function calculateYears(date) {
     }
 }
 
+function checkDeath(call) {
+    var death = false;
+    if (call.includes('death_date')) {
+       if (deathTrimmer(call).includes('Death date and age')) {
+           death = true;
+       }
+    }
+    return death;
+}
+
+function deathTrimmer(call) {
+    var deathSplit = call.split('death_date')[1].split('death_place')[0];
+    return deathSplit;
+}
+
+function deathCalculation(call) {
+    var deathSplit = deathTrimmer(call);
+    var date = deathSplit.match(reg).join('');
+    console.log(date);
+    
+    return deathSplit;
+}
+
 function successAliveMessage(age) {
     var message = beautifyName(getQuery()) + ' is ' + age + ' years old.';
     document.getElementById("message").innerHTML = message;
@@ -119,7 +142,7 @@ function successDeadMessage(age) {
 }
 
 function errorMessage() {
-    var message = beautifyName(getQuery()) + ' is not a person, or is not famous enough. Check spelling and try again.';
+    var message = beautifyName(getQuery()) + ' is not a real person, or is not famous enough. Check spelling and try again.';
     document.getElementById("message").innerHTML = message;
 }
 
