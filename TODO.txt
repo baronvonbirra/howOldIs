@@ -1,4 +1,4 @@
 # TODO notes
 ## Bug Fixing
-No more known issues...
+### Issue with more than 1 suggestions (example: lily)
 ## Refine code. Waiting for CR.
